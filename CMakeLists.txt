@@ -224,7 +224,11 @@ endif()
 hunter_add_package(LAPACK) # only in effect if HUNTER_ENABLED is set
 # prefer LAPACK config file
 if (WIN32)
-  set(LAPACK_DIR "lapack_windows/x64/" CACHE PATH "LAPACK directory" )
+  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    set(LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack_windows/x64/" CACHE PATH "LAPACK directory" )
+  else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    set(LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack_windows/x32/" CACHE PATH "LAPACK directory" )
+  endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif()
 
 find_package(LAPACK CONFIG)
@@ -263,7 +267,7 @@ add_subdirectory(SuiteSparse)
 
 macro(get_SuiteSparse_Version)
   set(_SuiteSparse_VERSION_FILE
-	  "${CMAKE_SOURCE_DIR}/SuiteSparse/SuiteSparse_config/SuiteSparse_config.h")
+	  "${PROJECT_SOURCE_DIR}/SuiteSparse/SuiteSparse_config/SuiteSparse_config.h")
   if(NOT EXISTS ${_SuiteSparse_VERSION_FILE})
     message(FATAL_ERROR
       "Could not find file: ${_SuiteSparse_VERSION_FILE} containing version "
